@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 _ASR_PIPELINE = None
 # yeah I know it's misspelled, too late to rename everything now
 _MODEL_ID = "openai/whisper-small"
+_DEFAULT_GENERATE_KWARGS = {"task": "transcribe", "language": "en"}
 
 
 def get_whisper_model():
@@ -83,7 +84,12 @@ def transcribe_audio(audio_path: str) -> tuple[str, float]:
 		audio_data, _ = librosa.load(audio_path, sr=16000, mono=True)
 		asr = get_whisper_model()
 		try:
-			result = asr({"sampling_rate": 16000, "raw": audio_data}, batch_size=8)
+			result = asr(
+				audio_data,
+				sampling_rate=16000,
+				batch_size=8,
+				generate_kwargs=_DEFAULT_GENERATE_KWARGS,
+			)
 		except Exception as local_exc:
 			if _is_memory_error(local_exc):
 				logger.warning("Local Whisper memory error detected. Falling back to API STT.")

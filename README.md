@@ -48,6 +48,10 @@ It is designed to be:
 - Session memory support.
 - Built with Gradio UI.
 
+Visual UI note:
+- The Next.js visual UI supports both direct browser microphone recording and file upload.
+- Browser recordings may arrive as `.webm`, `.ogg`, `.m4a`, or `.mp4`; the backend normalizes these to `.wav` before STT.
+
 Notes:
 - The model is configurable through environment variables (`OLLAMA_MODEL`).
 - Current default in code may still be `llama3.1:8b`; set `OLLAMA_MODEL=llama3.2` to match this README target.

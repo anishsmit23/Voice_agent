@@ -26,7 +26,12 @@ def load_manifest(manifest_path: str) -> list[dict]:
 def transcribe(asr, audio_path: str) -> tuple[str, float]:
     audio, _ = librosa.load(audio_path, sr=16000, mono=True)
     start = time.perf_counter()
-    result = asr({"sampling_rate": 16000, "raw": audio}, batch_size=8)
+    result = asr(
+        audio,
+        sampling_rate=16000,
+        batch_size=8,
+        generate_kwargs={"task": "transcribe", "language": "en"},
+    )
     elapsed = time.perf_counter() - start
     text = result.get("text", "") if isinstance(result, dict) else str(result)
     return " ".join(text.split()), elapsed

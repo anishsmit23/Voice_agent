@@ -20,6 +20,9 @@ class Settings:
 
 	max_summary_chars: int = int(os.getenv("MAX_SUMMARY_CHARS", "10000"))
 	require_confirmation: bool = os.getenv("REQUIRE_CONFIRMATION", "false").lower() == "true"
+	ui_theme: str = os.getenv("UI_THEME", "soft").strip().lower()
+	ui_primary_color: str = os.getenv("UI_PRIMARY_COLOR", "blue").strip().lower()
+	visual_ui_url: str = os.getenv("VISUAL_UI_URL", "http://127.0.0.1:3000").strip()
 
 
 settings = Settings()

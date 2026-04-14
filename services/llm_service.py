@@ -71,6 +71,27 @@ class LLMService:
 
 		return "not sure yet, tell me exactly what you want"
 
+	def _looks_unfinished_summary(self, text):
+		low = (text or "").strip().lower()
+		if not low:
+			return True
+		markers = [
+			"please provide",
+			"go ahead and provide",
+			"share the text",
+			"send the text",
+			"i'm ready to help",
+		]
+		return any(m in low for m in markers)
+
+	def _rough_summary(self, text):
+		clean = " ".join((text or "").split())
+		if not clean:
+			return "empty summary"
+		if len(clean) <= 220:
+			return f"- {clean}"
+		return f"- {clean[:217]}..."
+
 	def classify_intent(self, text: str) -> Dict[str, Any]:
 		raw = self._call_ollama(INTENT_SYSTEM_PROMPT, text)
 		if raw:
@@ -100,10 +121,15 @@ class LLMService:
 		return "def retry(operation, retries=3):\n    \"\"\"Simple retry wrapper.\"\"\"\n    last_error = None\n    for _ in range(retries):\n        try:\n            return operation()\n        except Exception as exc:\n            last_error = exc\n    raise last_error\n"
 
 	def summarize(self, text: str) -> str:
-		out = self._call_ollama(SUMMARY_SYSTEM_PROMPT, text)
-		if out:
+		prompt = (
+			"Summarize the text below right now in 3-6 concise bullet points. "
+			"Do not ask follow-up questions.\n\n"
+			f"TEXT:\n{text}"
+		)
+		out = self._call_ollama(SUMMARY_SYSTEM_PROMPT, prompt)
+		if out and not self._looks_unfinished_summary(out):
 			return out
-		return text[:300] + ("..." if len(text) > 300 else "")
+		return self._rough_summary(text)
 
 	def chat(self, text: str) -> str:
 		history = self.session_memory.get_recent_messages()

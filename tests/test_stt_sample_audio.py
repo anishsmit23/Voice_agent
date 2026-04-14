@@ -27,7 +27,7 @@ def test_transcribe_with_sample_audio_file(monkeypatch, tmp_path):
     _create_sample_wav(sample_path)
 
     class DummyASR:
-        def __call__(self, _payload, batch_size: int = 8):
+        def __call__(self, _payload, batch_size: int = 8, **_kwargs):
             return {"text": "sample transcription"}
 
     monkeypatch.setattr(wishper, "get_whisper_model", lambda: DummyASR())
