@@ -11,7 +11,7 @@ from services.tool_service import ToolService
 from utils.file_manager import ensure_output_dirs
 
 
-def _intent_labels(intent_result) -> str:
+def _intent_labels(intent_result):
 	if isinstance(intent_result, list):
 		return ", ".join(item.get("intent", "chat") for item in intent_result if isinstance(item, dict)) or "chat"
 	if isinstance(intent_result, dict):
@@ -19,7 +19,7 @@ def _intent_labels(intent_result) -> str:
 	return "chat"
 
 
-def _requires_file_confirmation(intent_result) -> bool:
+def _requires_file_confirmation(intent_result):
 	payloads = intent_result if isinstance(intent_result, list) else [intent_result]
 	file_op_intents = {"create_file", "write_code", "save_text"}
 	return any(
@@ -28,7 +28,7 @@ def _requires_file_confirmation(intent_result) -> bool:
 	)
 
 
-def _audio_source_symbol(audio_path: str) -> str:
+def _audio_source_symbol(audio_path):
 	name = os.path.basename(audio_path or "").lower()
 	if any(token in name for token in ["record", "mic", "microphone"]):
 		return "🎤"
@@ -41,12 +41,12 @@ def _audio_source_symbol(audio_path: str) -> str:
 
 def run_pipeline(audio_path, confirm_file_ops):
 	if not audio_path:
-		return "", "", "error", "Please provide audio input."
+		return "", "", "error", "need audio input"
 
 	try:
 		transcript, _duration = transcribe_audio(audio_path)
 		if not transcript:
-			return "", "", "error", "Audio error"
+			return "", "", "error", "audio failed"
 		transcript_display = f"{_audio_source_symbol(audio_path)} {transcript}"
 		classifier = IntentClassifier()
 		intent_result = classifier.classify(transcript)
@@ -57,7 +57,7 @@ def run_pipeline(audio_path, confirm_file_ops):
 				transcript_display,
 				intent,
 				"confirmation_required",
-				"File operation detected. Enable 'Approve file operations' and run again.",
+				"need approval checkbox for file ops",
 			)
 
 		tool_service = ToolService(get_llm_service())
@@ -65,7 +65,7 @@ def run_pipeline(audio_path, confirm_file_ops):
 		action_payload = router.route(intent_result, transcript)
 		return transcript_display, intent, action_payload.get("action", ""), action_payload.get("result", "")
 	except Exception:
-		return "", "", "error", "Pipeline error"
+		return "", "", "error", "pipeline fell over"
 
 
 def build_ui() -> gr.Blocks:

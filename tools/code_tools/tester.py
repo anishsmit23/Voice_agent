@@ -8,14 +8,14 @@ def run_tests() -> str:
 
 
 def check_python_syntax(code: str) -> str:
-	"""Validate Python syntax using ast.parse()."""
+	"""check python syntax"""
 	try:
 		ast.parse(code)
-		return "Syntax is valid."
+		return "syntax looks fine"
 	except SyntaxError as exc:
 		line = exc.lineno or 0
 		col = exc.offset or 0
 		msg = exc.msg or "Invalid syntax"
 		return f"Syntax error at line {line}, column {col}: {msg}"
 	except Exception as exc:
-		return f"Syntax check failed: {exc}"
+		return f"syntax check failed: {exc}"

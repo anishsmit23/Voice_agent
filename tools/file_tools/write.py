@@ -2,7 +2,7 @@ from utils.file_manager import resolve_output_path
 from pathlib import Path
 
 
-def _display_output_path(path: Path) -> str:
+def _display_output_path(path):
 	try:
 		return path.resolve().relative_to(Path.cwd().resolve()).as_posix()
 	except Exception:
@@ -10,9 +10,9 @@ def _display_output_path(path: Path) -> str:
 
 
 def write_to_file(filename: str, content: str, append: bool = False) -> str:
-	"""Write text to a file inside output/ with append or overwrite mode."""
+	"""write text in output sandbox"""
 	if not filename or not filename.strip():
-		return "Invalid filename: value is required."
+		return "need a filename here"
 
 	target = resolve_output_path(filename.strip())
 	target.parent.mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,6 @@
 from pipeline.intent.schema import IntentResult
 from services.llm_service import LLMService
-from tools.code_tools.code_generator import generate_code
+from tools.code_tools.code_generator import generate_code_from_description
 from tools.file_tools.create import create_file_or_folder
 from tools.text_tools.summarizer import summarize_text
 from utils.file_manager import resolve_output_path
@@ -10,7 +10,7 @@ class ToolService:
 	def __init__(self, llm_service: LLMService) -> None:
 		self.llm_service = llm_service
 
-	def _normalize_generated_path(self, path: str) -> str:
+	def _normalize_generated_path(self, path):
 		candidate = (path or "").strip().replace("\\", "/")
 		if not candidate:
 			return "retry_function.py"
@@ -30,7 +30,7 @@ class ToolService:
 			path = self._normalize_generated_path(intent_result.target_file or "generated_code.py")
 			create_file_or_folder(path, is_folder=False)
 			description = extra_text.strip() if extra_text and extra_text.strip() else transcript
-			message = generate_code(path, description)
+			message = generate_code_from_description("python", description, filename=path)
 			code = ""
 			try:
 				target = resolve_output_path(f"generated/{path}")

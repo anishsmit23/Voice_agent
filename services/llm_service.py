@@ -18,7 +18,7 @@ class LLMService:
 		self.model = settings.ollama_model
 		self.session_memory = SessionMemory(max_history_size=5)
 
-	def _call_ollama(self, system_prompt: str, user_prompt: str) -> str:
+	def _call_ollama(self, system_prompt, user_prompt):
 		payload = {
 			"model": self.model,
 			"prompt": f"{system_prompt}\n\nUser: {user_prompt}\nAssistant:",
@@ -26,6 +26,7 @@ class LLMService:
 			"options": {"temperature": settings.llm_temperature},
 		}
 		try:
+			# TODO: this timeout might be too short
 			r = requests.post(f"{self.base_url}/api/generate", json=payload, timeout=120)
 			r.raise_for_status()
 			data = r.json()
@@ -34,20 +35,9 @@ class LLMService:
 			logger.warning("Ollama call failed, using fallback logic: %s", exc)
 			return ""
 
-	def _smart_fallback_chat(self, text: str) -> str:
+	def _smart_fallback_chat(self, text):
 		query = (text or "").strip()
 		lower = query.lower()
-
-		if any(key in lower for key in ["best ai website", "ai websites", "ai tools", "coding assistant"]):
-			return (
-				"Here are strong AI tools for coding, based on use-case:\n"
-				"1. GitHub Copilot: best for in-editor code completion and refactors.\n"
-				"2. ChatGPT: best for debugging explanations, architecture ideas, and code generation.\n"
-				"3. Claude: best for long-context code reasoning and safer refactors.\n"
-				"4. Phind: best for developer-focused Q&A with concise code answers.\n"
-				"5. Perplexity: best for research with cited technical sources.\n\n"
-				"Suggested workflow: use Copilot in editor + ChatGPT/Claude for design/debug + Perplexity for API research."
-			)
 
 		if "retry" in lower and any(k in lower for k in ["python", "function", "code", "example"]):
 			return (
@@ -67,37 +57,19 @@ class LLMService:
 
 		if any(k in lower for k in ["error", "failed", "not working", "exception", "traceback"]):
 			return (
-				"Let us fix this quickly. Share these 3 details and I will give a precise patch:\n"
+				"Let us fix this quickly. Send these 3 things and I can patch it:\n"
 				"1. Full error message/traceback\n"
 				"2. The command you ran\n"
 				"3. Relevant file/function where it failed\n\n"
-				"Meanwhile, quick checklist: verify dependencies, confirm env/venv, and rerun with debug logs enabled."
+				"quick check: verify deps, confirm venv, rerun with logs."
 			)
 
-		if any(k in lower for k in ["how to", "help me", "what should i do", "suggest"]):
-			return (
-				"I can help with a concrete solution. Tell me your goal in this format:\n"
-				"Goal: ...\n"
-				"Inputs: ...\n"
-				"Expected output: ...\n"
-				"Constraints: ...\n\n"
-				"Once you send that, I will return exact steps and code."
-			)
-
-		# Generic but still useful fallback with lightweight intent extraction.
+		# rough fallback, good enough for now
 		verbs = re.findall(r"\b(create|build|write|generate|fix|summarize|explain|optimize)\b", lower)
 		if verbs:
-			return (
-				f"I can help with '{verbs[0]}'. Based on your request, I recommend:\n"
-				"1. Define the exact output format you want.\n"
-				"2. Start with a minimal working version.\n"
-				"3. Add validation/tests for reliability.\n"
-				"If you share the precise target, I will generate the final code directly."
-			)
+			return f"I can help with '{verbs[0]}'. share your exact target and I will draft code"
 
-		return (
-			"I can provide a direct solution. Describe the exact result you want, and I will return ready-to-run code or steps."
-		)
+		return "not sure yet, tell me exactly what you want"
 
 	def classify_intent(self, text: str) -> Dict[str, Any]:
 		raw = self._call_ollama(INTENT_SYSTEM_PROMPT, text)
@@ -116,10 +88,9 @@ class LLMService:
 		t = text.lower()
 		if "summarize" in t or "summary" in t:
 			return {"intent": "summarize_text", "target_file": "", "content": "", "reason": "keyword fallback"}
-		if "create" in t and "file" in t and "python" not in t and "code" not in t:
-			return {"intent": "create_file", "target_file": "generated/new_file.txt", "content": "", "reason": "keyword fallback"}
 		if "write" in t or "code" in t or "function" in t:
 			return {"intent": "write_code", "target_file": "generated/generated_code.py", "content": "", "reason": "keyword fallback"}
+		# rough fallback, good enough for now
 		return {"intent": "general_chat", "target_file": "", "content": "", "reason": "default fallback"}
 
 	def generate_code(self, request_text: str) -> str:
@@ -155,10 +126,11 @@ class LLMService:
 
 
 def chat_response(user_message: str, llm_service: LLMService | None = None) -> str:
-	"""Return a conversational response for a user message."""
+	"""chat entry point"""
 	message = (user_message or "").strip()
 	if not message:
-		return "Please share a message so I can help."
+		return "need some text here"
 
 	service = llm_service or LLMService()
+	print(f"chat input: {message[:50]}")
 	return service.chat(message)

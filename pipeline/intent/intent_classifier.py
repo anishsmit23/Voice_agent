@@ -19,7 +19,7 @@ class IntentClassifier:
 		self.client = Client(host=host)
 		self.max_retries = max_retries
 
-	def _validate_item(self, payload: dict[str, Any], raw_request: str) -> dict[str, Any]:
+	def _validate_item(self, payload, raw_request):
 		intent = payload.get("intent", "chat")
 		confidence = payload.get("confidence", None)
 		filename = payload.get("filename", None)
@@ -28,16 +28,16 @@ class IntentClassifier:
 		if not isinstance(intent, str) or not intent.strip() or intent not in ALLOWED_INTENTS:
 			intent = "chat"
 		if filename is not None and not isinstance(filename, str):
-			raise ValueError("filename must be a string or null")
+			raise ValueError("need a filename string")
 		if not isinstance(content_hint, str):
-			raise ValueError("content_hint must be a string")
+			raise ValueError("content hint should be text")
 
 		if confidence is None:
 			confidence = self._estimate_confidence(intent, content_hint)
 		try:
 			confidence = float(confidence)
 		except Exception as exc:
-			raise ValueError("confidence must be numeric") from exc
+			raise ValueError("bad confidence value") from exc
 		confidence = max(0.0, min(1.0, confidence))
 
 		return {
@@ -48,15 +48,15 @@ class IntentClassifier:
 			"raw_request": raw_request,
 		}
 
-	def _estimate_confidence(self, intent: str, content_hint: str) -> float:
-		# Lightweight certainty fallback when the model omits confidence.
+	def _estimate_confidence(self, intent, content_hint):
+		# model sometimes skips confidence, this keeps routing steady
 		if intent in {"create_file", "write_code", "summarize", "save_text"} and content_hint.strip():
 			return 0.82
 		if intent == "chat":
 			return 0.65
 		return 0.55
 
-	def _extract_json(self, content: str) -> Any:
+	def _extract_json(self, content):
 		text = (content or "").strip()
 		start_obj = text.find("{")
 		end_obj = text.rfind("}")
@@ -69,10 +69,10 @@ class IntentClassifier:
 		start = start_obj
 		end = end_obj
 		if start == -1 or end == -1 or end <= start:
-			raise ValueError("No JSON object/array found in model output")
+			raise ValueError("no json in model output")
 		return json.loads(text[start : end + 1])
 
-	def _extract_filename(self, request_text: str) -> str | None:
+	def _extract_filename(self, request_text):
 		text = request_text.strip()
 		quoted = re.search(r"['\"]([A-Za-z0-9_\-./]+\.[A-Za-z0-9]+)['\"]", text)
 		if quoted:
@@ -90,7 +90,7 @@ class IntentClassifier:
 			return "generated/retry_function.py"
 		return None
 
-	def _heuristic_classify(self, request_text: str) -> list[dict[str, Any]] | None:
+	def _heuristic_classify(self, request_text):
 		text = request_text.strip()
 		lower = text.lower()
 
@@ -98,6 +98,7 @@ class IntentClassifier:
 		filename = self._extract_filename(text)
 
 		wants_file = ("create" in lower or "make" in lower) and ("file" in lower or "folder" in lower)
+		# TODO: tighten these keywords after real user logs
 		code_markers = ["write code", "generate code", "function", "script", "into .py", " into "]
 		wants_code = any(token in lower for token in code_markers) or bool(re.search(r"\b\w+\.py\b", lower))
 		wants_summary = any(token in lower for token in ["summarize", "summary", "tl;dr"])
@@ -186,7 +187,7 @@ class IntentClassifier:
 				if isinstance(parsed, dict):
 					parsed = [parsed]
 				if not isinstance(parsed, list) or len(parsed) == 0:
-					raise ValueError("Model output must be a non-empty JSON array")
+					raise ValueError("empty intent list")
 
 				validated = [self._validate_item(item, request_text) for item in parsed]
 				logger.info(

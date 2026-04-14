@@ -12,17 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 def record_audio(duration: int) -> str:
-	"""Record microphone audio and save as a mono 16kHz WAV file.
-
-	Args:
-		duration: Recording duration in seconds.
-
-	Returns:
-		Path to the saved WAV file.
-	"""
+	"""record mic audio to wav"""
 	try:
 		if duration <= 0:
-			raise ValueError("duration must be a positive integer")
+			raise ValueError("duration has to be > 0")
 
 		sample_rate = 16000
 		channels = 1
@@ -47,4 +40,4 @@ def record_audio(duration: int) -> str:
 		return str(file_path)
 	except Exception as exc:
 		logger.exception("Audio recording failed: %s", exc)
-		raise RuntimeError(f"Failed to record audio: {exc}") from exc
+		raise RuntimeError(f"couldn't record audio: {exc}") from exc

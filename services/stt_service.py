@@ -12,7 +12,7 @@ class STTService:
 	def __init__(self) -> None:
 		self._pipe: Optional[object] = None
 
-	def _load_pipeline(self) -> None:
+	def _load_pipeline(self):
 		if self._pipe is None:
 			logger.info("Loading STT model: %s", settings.stt_model_id)
 			self._pipe = pipeline("automatic-speech-recognition", model=settings.stt_model_id)

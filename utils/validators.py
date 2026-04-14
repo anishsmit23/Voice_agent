@@ -8,12 +8,12 @@ SUPPORTED_INTENTS = {"create_file", "write_code", "summarize_text", "general_cha
 
 def validate_audio_path(path: str) -> None:
 	if not path:
-		raise ValueError("Audio path is required.")
+		raise ValueError("need audio path")
 	if not os.path.exists(path):
-		raise ValueError(f"Audio file not found: {path}")
+		raise ValueError(f"audio file missing: {path}")
 	ext = os.path.splitext(path)[1].lower()
 	if ext not in SUPPORTED_AUDIO_EXTENSIONS:
-		raise ValueError(f"Unsupported audio format: {ext}")
+		raise ValueError(f"unsupported format {ext}")
 
 
 def validate_intent(intent: str) -> str:
@@ -24,15 +24,7 @@ def validate_intent(intent: str) -> str:
 
 
 def validate_intent_json(payload: dict[str, Any] | None) -> dict[str, Any]:
-	"""Validate and normalize intent JSON payload.
-
-	Required fields:
-	- intent
-	- filename
-	- content_hint
-
-	If any field is missing/invalid, a default value is applied.
-	"""
+	"""normalize intent payload"""
 	data = payload if isinstance(payload, dict) else {}
 
 	intent = data.get("intent", "chat")

@@ -9,7 +9,7 @@ class SessionMemory:
 		self.history: list[dict] = []
 		self._load_history()
 
-	def _load_history(self) -> None:
+	def _load_history(self):
 		if not self.storage_path.exists():
 			return
 		try:
@@ -29,7 +29,7 @@ class SessionMemory:
 		except Exception:
 			self.history = []
 
-	def _save_history(self) -> None:
+	def _save_history(self):
 		self.storage_path.parent.mkdir(parents=True, exist_ok=True)
 		with open(self.storage_path, "w", encoding="utf-8") as fp:
 			json.dump(self.history, fp, ensure_ascii=False, indent=2)
@@ -47,10 +47,6 @@ class SessionMemory:
 
 		self._save_history()
 
-	def add_message(self, user: str, assistant: str) -> None:
-		"""Backward-compatible alias to store one conversation turn."""
-		self.add_interaction(user=user, assistant=assistant)
-
 	def get_recent_messages(self, n: int | None = None) -> list[dict]:
 		"""Retrieve the most recent N messages, or all if N is not provided."""
 		if n is None:
@@ -59,6 +55,3 @@ class SessionMemory:
 		if count == 0:
 			return []
 		return list(self.history[-count:])
-
-	def all(self) -> list[dict]:
-		return self.get_recent_messages()

@@ -1,8 +1,7 @@
 from pathlib import Path
 
 
-def _display_output_path(path: Path) -> str:
-	"""Return assignment-friendly relative output path when possible."""
+def _display_output_path(path):
 	try:
 		return path.resolve().relative_to(Path.cwd().resolve()).as_posix()
 	except Exception:
@@ -10,19 +9,16 @@ def _display_output_path(path: Path) -> str:
 
 
 def create_file(filename: str) -> str:
-	"""Create a new file only inside output/generated/.
-
-	Returns a success/conflict message and blocks path traversal attempts.
-	"""
+	"""create file in sandbox"""
 	if not filename or not filename.strip():
-		return "Invalid filename: value is required."
+		return "need a filename here"
 
 	base = Path("output/generated").resolve()
 	requested = (base / filename.strip()).resolve()
 
-	# Prevent writing outside output/generated.
+	# don't want to accidentally nuke system files
 	if requested != base and base not in requested.parents:
-		return "Invalid path: path traversal is not allowed."
+		return "nope, path escapes output"
 
 	requested.parent.mkdir(parents=True, exist_ok=True)
 
@@ -34,18 +30,15 @@ def create_file(filename: str) -> str:
 
 
 def create_folder(folder_path: str) -> str:
-	"""Create a folder only inside output/.
-
-	Returns a success/existence/invalid-path message.
-	"""
+	"""create folder in sandbox"""
 	if not folder_path or not folder_path.strip():
-		return "Invalid folder path: value is required."
+		return "need a folder name"
 
 	base = Path("output").resolve()
 	target = (base / folder_path.strip()).resolve()
 
 	if target != base and base not in target.parents:
-		return "Invalid path: path traversal is not allowed."
+		return "path looks sketchy"
 
 	if target.exists():
 		if target.is_dir():
@@ -57,12 +50,12 @@ def create_folder(folder_path: str) -> str:
 
 
 def create_file_or_folder(relative_path: str, is_folder: bool = False) -> str:
-	"""Backward-compatible helper retained for existing callers."""
+	"""compat helper"""
 	if is_folder:
 		base = Path("output/generated").resolve()
 		target = (base / relative_path).resolve()
 		if target != base and base not in target.parents:
-			return "Invalid path: path traversal is not allowed."
+			return "path looks sketchy"
 		target.mkdir(parents=True, exist_ok=True)
 		return f"Folder created:\n{_display_output_path(target)}"
 	return create_file(relative_path)

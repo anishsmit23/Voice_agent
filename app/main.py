@@ -37,7 +37,7 @@ def health() -> dict:
 @app.post("/process-audio")
 async def process_audio(audio: UploadFile = File(...)) -> dict:
 	if audio is None:
-		raise HTTPException(status_code=400, detail="audio file is required")
+		raise HTTPException(status_code=400, detail="need audio file")
 
 	tmp_path = ""
 	try:
@@ -52,13 +52,13 @@ async def process_audio(audio: UploadFile = File(...)) -> dict:
 			transcript, duration = transcribe_audio(tmp_path)
 			logger.info("STT duration: %.3f seconds", duration)
 			if not transcript:
-				raise RuntimeError("Empty transcription")
+				raise RuntimeError("empty transcription")
 		except Exception:
 			return {
 				"transcription": "",
 				"intent": "",
 				"action": "error",
-				"result": "Audio error",
+				"result": "audio step failed",
 			}
 
 		try:
@@ -66,12 +66,13 @@ async def process_audio(audio: UploadFile = File(...)) -> dict:
 			intent_payload = classifier.classify(transcript)
 			intent_list = [item.get("intent", "chat") for item in intent_payload] if isinstance(intent_payload, list) else ["chat"]
 		except Exception:
-			return {
+			res = {
 				"transcription": transcript,
 				"intent": "",
 				"action": "error",
-				"result": "Intent error",
+				"result": "intent parse blew up",
 			}
+			return res
 
 		try:
 			tool_service = ToolService(get_llm_service())
@@ -82,7 +83,7 @@ async def process_audio(audio: UploadFile = File(...)) -> dict:
 				"transcription": transcript,
 				"intent": ", ".join(intent_list),
 				"action": "error",
-				"result": "Tool error",
+				"result": "tools failed",
 			}
 
 		response = {
@@ -97,7 +98,7 @@ async def process_audio(audio: UploadFile = File(...)) -> dict:
 		raise
 	except Exception as exc:
 		logger.exception("Failed to process audio request: %s", exc)
-		raise HTTPException(status_code=500, detail="Failed to process audio")
+		raise HTTPException(status_code=500, detail="couldn't process audio")
 	finally:
 		if tmp_path and os.path.exists(tmp_path):
 			try:

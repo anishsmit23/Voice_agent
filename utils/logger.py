@@ -6,7 +6,7 @@ from app.config import settings
 _LOGGER_CONFIGURED = False
 
 
-def _resolve_level(level: str | int | None) -> int:
+def _resolve_level(level):
 	if isinstance(level, int):
 		return level
 	if isinstance(level, str):
@@ -15,24 +15,24 @@ def _resolve_level(level: str | int | None) -> int:
 
 
 def configure_logging(level: str | int = "INFO", log_file: str = "agent.log") -> None:
-	"""Configure centralized logging handlers once for file + console output."""
+	"""set up logging once"""
 	global _LOGGER_CONFIGURED
 	if _LOGGER_CONFIGURED:
 		return
 
 	os.makedirs(settings.logs_dir, exist_ok=True)
-	resolved_level = _resolve_level(level)
+	lvl = _resolve_level(level)
 	formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s")
 
 	root_logger = logging.getLogger()
-	root_logger.setLevel(resolved_level)
+	root_logger.setLevel(lvl)
 
 	stream_handler = logging.StreamHandler()
-	stream_handler.setLevel(resolved_level)
+	stream_handler.setLevel(lvl)
 	stream_handler.setFormatter(formatter)
 
 	file_handler = logging.FileHandler(os.path.join(settings.logs_dir, log_file), encoding="utf-8")
-	file_handler.setLevel(resolved_level)
+	file_handler.setLevel(lvl)
 	file_handler.setFormatter(formatter)
 
 	root_logger.addHandler(stream_handler)

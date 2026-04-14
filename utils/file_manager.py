@@ -15,5 +15,5 @@ def resolve_output_path(relative_path: str) -> Path:
 	base = Path(settings.output_dir).resolve()
 	target = (base / relative_path).resolve()
 	if base not in target.parents and target != base:
-		raise ValueError("File operations are restricted to the output/ directory.")
+		raise ValueError("path escapes output dir")
 	return target

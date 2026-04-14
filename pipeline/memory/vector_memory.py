@@ -15,7 +15,7 @@ class VectorMemory:
 		self.index = faiss.IndexFlatIP(self.dimension)
 		self.messages: list[str] = []
 
-	def _encode(self, text: str) -> np.ndarray:
+	def _encode(self, text):
 		vec = self.model.encode([text], convert_to_numpy=True).astype("float32")
 		faiss.normalize_L2(vec)
 		return vec

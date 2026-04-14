@@ -257,7 +257,7 @@ Tested on:
 - GPU: Intel Iris Integrated GPU
 - OS: Windows
 
-Local system details (this machine):
+Local system details (my machine):
 
 - RAM: 15.79 GB (approx. 16 GB)
 - CPU: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
