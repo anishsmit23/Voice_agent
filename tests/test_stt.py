@@ -11,7 +11,7 @@ def test_transcribe_audio_success(monkeypatch):
 		return [0.1, -0.1, 0.05], 16000
 
 	class DummyASR:
-		def __call__(self, _payload, batch_size: int = 8):
+		def __call__(self, _payload, batch_size: int = 8, **_kwargs):
 			assert batch_size == 8
 			return {"text": "  hello   world  "}
 

@@ -18,13 +18,14 @@ def validate_audio_file(file_path: str) -> str:
 		raise FileNotFoundError(f"audio file missing: {source}")
 
 	ext = source.suffix.lower()
-	if ext not in {".wav", ".mp3"}:
-		raise ValueError("only wav or mp3 for now")
+	supported_audio_extensions = {".wav", ".mp3", ".webm", ".ogg", ".m4a", ".mp4"}
+	if ext not in supported_audio_extensions:
+		raise ValueError("only wav, mp3, webm, ogg, m4a, or mp4 for now")
 
 	if ext == ".wav":
 		return str(source)
 
-	# TODO: handle mp3 properly
+	# Convert non-wav inputs to wav so downstream STT always receives a stable format.
 	target = source.with_suffix(".wav")
 	audio, sr = librosa.load(str(source), sr=None, mono=True)
 	sf.write(str(target), audio, sr)

@@ -1,10 +1,16 @@
 import os
 import tempfile
+from urllib.parse import urlencode
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+import httpx
+from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
+from gradio import mount_gradio_app
 
+from app.config import settings
 from app.dependencies import get_llm_service
+from app.ui import build_ui
 from pipeline.intent.intent_classifier import IntentClassifier
 from pipeline.routing.router import Router
 from pipeline.stt.wishper import transcribe_audio
@@ -32,6 +38,67 @@ def startup_event() -> None:
 @app.get("/health")
 def health() -> dict:
 	return {"status": "ok"}
+
+
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+	return RedirectResponse(url="/visual-ui/")
+
+
+@app.api_route("/visual-ui/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"])
+async def visual_ui_proxy(path: str, request: Request) -> Response:
+	base_url = settings.visual_ui_url.rstrip("/")
+	target_url = f"{base_url}/{path}" if path else f"{base_url}/"
+	if request.query_params:
+		target_url = f"{target_url}?{urlencode(list(request.query_params.multi_items()))}"
+
+	request_headers = {
+		key: value
+		for key, value in request.headers.items()
+		if key.lower() not in {"host", "content-length", "connection"}
+	}
+
+	try:
+		async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
+			proxied = await client.request(
+				method=request.method,
+				url=target_url,
+				headers=request_headers,
+				content=await request.body(),
+			)
+	except httpx.RequestError as exc:
+		logger.warning("Visual UI proxy unavailable at %s: %s", settings.visual_ui_url, exc)
+		return RedirectResponse(url="/gradio")
+
+	if not path and proxied.status_code >= 400:
+		logger.warning(
+			"Visual UI root returned status %s from %s. Falling back to Gradio.",
+			proxied.status_code,
+			settings.visual_ui_url,
+		)
+		return RedirectResponse(url="/gradio")
+
+	response_headers = {
+		key: value
+		for key, value in proxied.headers.items()
+		if key.lower() not in {"content-length", "transfer-encoding", "connection", "content-encoding"}
+	}
+	return Response(
+		content=proxied.content,
+		status_code=proxied.status_code,
+		headers=response_headers,
+		media_type=proxied.headers.get("content-type"),
+	)
+
+
+@app.api_route("/_next/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"])
+async def visual_ui_next_assets(path: str, request: Request) -> Response:
+	return await visual_ui_proxy(path=f"_next/{path}", request=request)
+
+
+@app.api_route("/favicon.ico", methods=["GET", "HEAD"])
+async def visual_ui_favicon(request: Request) -> Response:
+	return await visual_ui_proxy(path="favicon.ico", request=request)
 
 
 @app.post("/process-audio")
@@ -105,3 +172,7 @@ async def process_audio(audio: UploadFile = File(...)) -> dict:
 				os.remove(tmp_path)
 			except Exception:
 				logger.warning("Could not remove temporary audio file: %s", tmp_path)
+
+
+ui_app = build_ui()
+app = mount_gradio_app(app=app, blocks=ui_app, path="/gradio")
