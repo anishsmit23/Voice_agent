@@ -51,6 +51,69 @@
 
 ---
 
+## 📸 Screenshots & UI Walkthrough
+
+<div align="center">
+
+### Gradio Web Interface
+
+The **Voice Agent** provides an intuitive, modern Gradio interface with:
+
+- 🎤 **Dual Audio Input** — Record live from microphone or upload `.wav`/`.mp3` files
+- 📋 **Real-time Transcription Display** — Shows recognized speech with source indicator (🎤 microphone vs 📁 upload)
+- 🧠 **Intent Preview** — Displays detected intents before execution
+- ✅ **Safety Confirmation** — Human-in-the-loop checkbox for file operations
+- 📤 **Rich Output Panel** — Action taken + detailed result with generated code/file paths
+
+<br/>
+
+<img src="https://private-user-images.githubusercontent.com/anishsmit23/Voice_agent/assets/raw/modules-architecture.png?token=EXAMPLE" alt="Gradio UI showing voice input and output" width="100%"/>
+
+<br/>
+
+### Key UI Elements
+
+| Component | Purpose | Example |
+|-----------|---------|---------|
+| 🎙️ **Audio Input** | Record or upload voice command | "Write a Python retry function" |
+| ✍️ **Transcription Box** | Shows recognized speech with emoji indicator | "🎤 Write a Python retry function" |
+| 🏷️ **Intent Display** | Recognized intents from speech | "write_code" or "create_file, save_text" |
+| ☑️ **Approval Checkbox** | Safety gate for file operations | Must enable before file creation |
+| 📄 **Result Panel** | Action executed + generated output | File path: `output/generated/retry.py` |
+| 💾 **Generated Code** | Full source code displayed inline | Python, JavaScript, etc. |
+
+<br/>
+
+### Example Interactions
+
+#### 1️⃣ Write a Python Function
+```
+Input:  🎤 "Write a Python retry helper function"
+Intent: write_code
+Action: Generates code via LLaMA → formats with Black → saves
+Result: ✅ Wrote 412 chars to output/generated/generated_code.py
+         [Full generated code displayed]
+```
+
+#### 2️⃣ Create and Summarize
+```
+Input:  🎤 "Summarize this article and save to report.txt"
+Intent: [summarize, save_text]  (chained)
+Action: summarize → save_text → output/generated/report.txt
+Result: ✅ Summary + file saved
+```
+
+#### 3️⃣ Interactive Chat
+```
+Input:  📁 "What are the best AI tools for coding?"
+Intent: chat
+Result: ✅ Full conversational response with session context
+```
+
+</div>
+
+---
+
 ## 🎯 Features
 
 <table>
@@ -513,11 +576,6 @@ Results are logged to `output/generated/requirement_verification.md` and benchma
 
 ---
 
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
----
 
 <div align="center">
 
