@@ -1,5 +1,11 @@
 # Voice Agent
 
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Gradio](https://img.shields.io/badge/UI-Gradio-orange)
+![Whisper](https://img.shields.io/badge/STT-Whisper-red)
+![LLM](https://img.shields.io/badge/LLM-Llama-green)
+![Status](https://img.shields.io/badge/Project-Complete-success)
+
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=190&section=header&text=Voice%20Agent&fontSize=64&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=Voice-Controlled%20Local%20AI%20Agent&descAlignY=62&descSize=20" alt="Voice Agent banner" width="100%"/>
 </p>
@@ -64,6 +70,33 @@ Execution flow:
 3. Intent classifier identifies one or more actions.
 4. Router executes intents in sequence with guardrails.
 5. Outputs are returned in UI and persisted under `output/`.
+
+---
+
+# 🔄 System Workflow
+
+Audio Input  
+↓  
+Speech-to-Text (Whisper)  
+↓  
+Intent Detection (LLM)  
+↓  
+Router  
+↓  
+Tool Execution  
+↓  
+Output Folder  
+↓  
+Gradio UI Display
+
+Step summary:
+1. Audio Input: user provides voice from microphone or uploads an audio file.
+2. Speech-to-Text (Whisper): audio is converted to normalized text using Whisper-small.
+3. Intent Detection (LLM): the system classifies user intent(s) using heuristic rules plus Ollama LLM fallback.
+4. Router: intents are ordered and dispatched as a single action or multi-intent chain.
+5. Tool Execution: mapped tools run the requested task (create file, generate code, summarize, chat, and more).
+6. Output Folder: generated artifacts are safely stored under `output/generated/`.
+7. Gradio UI Display: final result, action details, and status are shown in the web interface.
 
 ---
 
@@ -196,6 +229,54 @@ REQUIRE_CONFIRMATION=true
 
 ---
 
+# 🧠 Models Used
+
+| Component | Model |
+|----------|------|
+| Speech-to-Text | Whisper-small |
+| Intent Model | Llama 3.2 (3B) |
+| UI Framework | Gradio |
+| Programming Language | Python |
+| Routing | Python-based Intent Router |
+
+Why these were chosen:
+- Whisper-small: strong accuracy-to-speed balance for local STT on consumer hardware.
+- Llama 3.2 (3B): efficient local intent understanding with good instruction-following quality. A bit outdated but due to lack of local computational power I preffered using this. 
+- Gradio: fastest way to ship an interactive ML interface with minimal frontend overhead.
+- Python: mature ecosystem for AI tooling, orchestration, and rapid iteration.
+- Python-based intent router: transparent, debuggable control flow for deterministic multi-intent execution.
+
+---
+
+# 🖥️ Hardware Used
+
+Tested on:
+
+- RAM: 16 GB
+- CPU: Intel Processor
+- GPU: Intel Iris Integrated GPU
+- OS: Windows
+
+Local system details (this machine):
+
+- RAM: 15.79 GB (approx. 16 GB)
+- CPU: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
+- GPU: Intel(R) Iris(R) Xe Graphics
+- OS: Microsoft Windows 11 Home Single Language (10.0.26200)
+
+Models run locally on-device using Whisper + Ollama, with no mandatory external API dependency for core pipeline execution.
+
+---
+
+# ⚠️ Known Limitations
+
+- Performance depends on CPU speed
+- Large audio files may increase processing time
+- Whisper accuracy depends on microphone quality
+- Very long responses may take additional processing time
+
+---
+
 ## Usage Examples
 Voice commands you can try:
 - "Create a file named notes.txt and write hello world"
@@ -289,4 +370,5 @@ This project demonstrates:
 
 <p align="center">
 Built for AI/ML internship-level engineering standards.
+made by Anish. 
 </p>
