@@ -1,4 +1,4 @@
-﻿# Voice Agent
+# Voice Agent
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=190&section=header&text=Voice%20Agent&fontSize=64&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=Voice-Controlled%20Local%20AI%20Agent&descAlignY=62&descSize=20" alt="Voice Agent banner" width="100%"/>
@@ -290,5 +290,3 @@ This project demonstrates:
 <p align="center">
 Built for AI/ML internship-level engineering standards.
 </p>
-#   V o i c e _ a g e n t  
- 
