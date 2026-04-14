@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Voice%20Agent&fontSize=70&fontColor=fff&animation=twinkling&fontAlignY=35&desc=Voice-Controlled%20Local%20AI%20Agent&descAlignY=60&descSize=22" width="100%"/>
 
@@ -151,52 +151,52 @@ Result: ✅ Full conversational response with session context
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        ENTRYPOINTS                                   │
-│   ┌──────────────┐    ┌──────────────┐    ┌─────────────────────┐  │
-│   │  Gradio UI   │    │  FastAPI     │    │  CLI                │  │
-│   │  app/ui.py   │    │  app/main.py │    │  scripts/run_agent  │  │
-│   └──────┬───────┘    └──────┬───────┘    └──────────┬──────────┘  │
+│                        ENTRYPOINTS                                  │
+│   ┌──────────────┐    ┌──────────────┐    ┌─────────────────────┐   │
+│   │  Gradio UI   │    │  FastAPI     │    │  CLI                │   │
+│   │  app/ui.py   │    │  app/main.py │    │  scripts/run_agent  │   │
+│   └──────┬───────┘    └──────┬───────┘    └──────────┬──────────┘   │
 └──────────┼────────────────────┼────────────────────────┼────────────┘
            │                    │                         │
            └────────────────────┼─────────────────────────┘
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     STT LAYER                                        │
-│                                                                      │
-│   Audio (.wav/.mp3)                                                  │
-│        │                                                             │
-│        ▼                                                             │
+│                     STT LAYER                                       │
+│                                                                     │
+│   Audio (.wav/.mp3)                                                 │
+│        │                                                            │
+│        ▼                                                            │
 │   audio_preprocess.py  ──► 16kHz mono resampling (librosa)          │
-│        │                                                             │
-│        ▼                                                             │
+│        │                                                            │
+│        ▼                                                            │
 │   wishper.py  ──► transformers ASR pipeline (whisper-small)         │
 │        │              [fallback: OpenAI Whisper API if OOM]         │
-│        ▼                                                             │
-│   transcribed_text: str                                              │
+│        ▼                                                            │
+│   transcribed_text: str                                             │
 └────────────────────────────────┬────────────────────────────────────┘
                                  │
                                  ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    INTENT LAYER                                       │
-│                                                                      │
-│   intent_classifier.py                                               │
-│        │                                                             │
+│                    INTENT LAYER                                     │
+│                                                                     │
+│   intent_classifier.py                                              │
+│        │                                                            │
 │        ├─► Step 1: Heuristic regex rules (fast, no LLM call)        │
 │        │         [create_file / write_code / summarize / save_text] │
-│        │                                                             │
+│        │                                                            │
 │        └─► Step 2: Ollama JSON classification (if heuristic fails)  │
 │                  [llama3.1:8b, temperature=0, max 2 retries]        │
-│                  Returns: [{intent, confidence, filename, hint}]     │
+│                  Returns: [{intent, confidence, filename, hint}]    │
 └────────────────────────────────┬────────────────────────────────────┘
                                  │
                                  ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    ROUTING LAYER                                      │
-│                                                                      │
-│   router.py  ──► Iterates ordered intent list                        │
-│                  3 retries per step                                  │
-│                  Chains: summarize output → save_text input          │
-│                                                                      │
+│                    ROUTING LAYER                                    │
+│                                                                     │
+│   router.py  ──► Iterates ordered intent list                       │
+│                  3 retries per step                                 │
+│                  Chains: summarize output → save_text input         │
+│                                                                     │
 │   ┌──────────────┬────────────────┬─────────────┬─────────────────┐ │
 │   │ create_file  │  write_code    │  summarize  │  chat / save    │ │
 │   │              │                │             │                 │ │
@@ -413,23 +413,23 @@ Multiple intents can be chained in a single utterance:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                SAFETY LAYERS                     │
-│                                                  │
-│  1. Filesystem Sandboxing                        │
-│     All writes → output/ only                    │
-│     utils/file_manager.py resolve_output_path    │
-│                                                  │
-│  2. Path Traversal Protection                    │
-│     Rejects "../" and absolute paths             │
-│                                                  │
-│  3. Human-in-the-Loop (UI)                       │
-│     "Approve file operations" checkbox           │
-│     Blocks create_file, write_code, save_text    │
-│     until user explicitly approves               │
-│                                                  │
-│  4. Intent Validation                            │
-│     Unknown intents fall back to chat            │
-│     3-retry circuit breaker per tool step        │
+│                SAFETY LAYERS                    │
+│                                                 │
+│  1. Filesystem Sandboxing                       │
+│     All writes → output/ only                   │
+│     utils/file_manager.py resolve_output_path   │
+│                                                 │
+│  2. Path Traversal Protection                   │
+│     Rejects "../" and absolute paths            │
+│                                                 │
+│  3. Human-in-the-Loop (UI)                      │
+│     "Approve file operations" checkbox          │
+│     Blocks create_file, write_code, save_text   │
+│     until user explicitly approves              │
+│                                                 │
+│  4. Intent Validation                           │
+│     Unknown intents fall back to chat           │
+│     3-retry circuit breaker per tool step       │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -583,11 +583,12 @@ Built for the **Mem0 AI/ML Generative AI Developer Intern Assignment**
 
 <br/>
 
-Made with ❤️ by [anish](https://github.com/anishsmit23)
+Made by [anish](https://github.com/anishsmit23)
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" width="100%"/>
 
 </div>
- 
- #   V o i c e _ a g e n t  
+
+
+#   V o i c e _ a g e n t  
  
