@@ -9,9 +9,8 @@
   <a href="https://gradio.app/"><img src="https://img.shields.io/badge/Gradio-4.38-FF7C00?style=for-the-badge&logo=gradio&logoColor=white" alt="Gradio"/></a>
   <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.112-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"/></a>
   <a href="https://ollama.com/"><img src="https://img.shields.io/badge/Ollama-LLaMA%203.1-black?style=for-the-badge&logo=ollama&logoColor=white" alt="Ollama"/></a>
-  <a href="https://huggingface.co/"><img src="https://img.shields.io/badge/HuggingFace-Whisper-Small-FFD21E?style=for-the-badge" alt="HuggingFace Whisper"/></a>
+  <a href="https://huggingface.co/"><img src="https://img.shields.io/badge/HuggingFace-Whisper%20Small-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="HuggingFace Whisper"/></a>
   <a href="https://docker.com/"><img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"/></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License"/></a>
 </p>
 
 <p align="center"><strong>Speak. Understand. Execute.</strong> A fully local, privacy-first AI agent that converts your voice into real actions: write code, create files, summarize text, and chat, all running on your own machine.</p>
@@ -582,3 +581,5 @@ Made by [anish](https://github.com/anishsmit23)
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" width="100%"/>
 
 </div>
+#   V o i c e _ a g e n t  
+ 
