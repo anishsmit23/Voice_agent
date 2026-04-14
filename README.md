@@ -67,7 +67,7 @@ The **Voice Agent** provides an intuitive, modern Gradio interface with:
 
 <br/>
 
-<img src="https://private-user-images.githubusercontent.com/anishsmit23/Voice_agent/assets/raw/modules-architecture.png?token=EXAMPLE" alt="Gradio UI showing voice input and output" width="100%"/>
+<img src="https://github.com/anishsmit23/Voice_agent/issues/1#issue-4261383807" alt="Gradio UI showing voice input and output" width="100%"/>
 
 <br/>
 
@@ -589,3 +589,5 @@ Made with ❤️ by [anishsmit23](https://github.com/anishsmit23)
 
 </div>
 
+#   V o i c e _ a g e n t  
+ 
