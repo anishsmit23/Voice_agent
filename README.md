@@ -559,7 +559,7 @@ Results are logged to `output/generated/requirement_verification.md` and benchma
 | `fastapi` | 0.112.2 | REST API |
 | `transformers` | 4.44.2 | Whisper STT |
 | `ollama` | 0.4.7 | Local LLM client |
-| `torch` | ≥2.2.0 | ML runtime |
+| `torch` | >=2.2.0 | ML runtime |
 | `librosa` | 0.10.2 | Audio preprocessing |
 | `black` | 24.8.0 | Code formatting |
 | `sentence-transformers` | 3.1.1 | Vector memory embeddings |
@@ -581,5 +581,3 @@ Made by [anish](https://github.com/anishsmit23)
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" width="100%"/>
 
 </div>
-#   V o i c e _ a g e n t  
- 
