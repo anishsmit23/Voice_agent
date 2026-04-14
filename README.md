@@ -2,39 +2,36 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Voice%20Agent&fontSize=70&fontColor=fff&animation=twinkling&fontAlignY=35&desc=Voice-Controlled%20Local%20AI%20Agent&descAlignY=60&descSize=22" width="100%"/>
 
-<br/>
-
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Gradio](https://img.shields.io/badge/Gradio-4.38-FF7C00?style=for-the-badge&logo=gradio&logoColor=white)](https://gradio.app/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.112-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Ollama](https://img.shields.io/badge/Ollama-LLaMA%203.1-black?style=for-the-badge&logo=ollama&logoColor=white)](https://ollama.com/)
-[![HuggingFace](https://img.shields.io/badge/🤗%20Whisper-Small-FFD21E?style=for-the-badge)](https://huggingface.co/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-
-<br/>
-
-> **Speak. Understand. Execute.** — A fully local, privacy-first AI agent that converts your voice into real actions: write code, create files, summarize text, and chat — all running on your own machine.
-
-<br/>
-
-[🚀 Quick Start](#-quick-start) · [🏗️ Architecture](#️-architecture) · [🎯 Features](#-features) · [⚙️ Configuration](#️-configuration) · [🐳 Docker](#-docker) · [📖 API Reference](#-api-reference)
-
-<br/>
-
 </div>
+
+<p align="center">
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
+  <a href="https://gradio.app/"><img src="https://img.shields.io/badge/Gradio-4.38-FF7C00?style=for-the-badge&logo=gradio&logoColor=white" alt="Gradio"/></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.112-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"/></a>
+  <a href="https://ollama.com/"><img src="https://img.shields.io/badge/Ollama-LLaMA%203.1-black?style=for-the-badge&logo=ollama&logoColor=white" alt="Ollama"/></a>
+  <a href="https://huggingface.co/"><img src="https://img.shields.io/badge/HuggingFace-Whisper-Small-FFD21E?style=for-the-badge" alt="HuggingFace Whisper"/></a>
+  <a href="https://docker.com/"><img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License"/></a>
+</p>
+
+<p align="center"><strong>Speak. Understand. Execute.</strong> A fully local, privacy-first AI agent that converts your voice into real actions: write code, create files, summarize text, and chat, all running on your own machine.</p>
+
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> ·
+  <a href="#-architecture">Architecture</a> ·
+  <a href="#-features">Features</a> ·
+  <a href="#-configuration">Configuration</a> ·
+  <a href="#-docker">Docker</a> ·
+  <a href="#-api-reference">API Reference</a>
+</p>
 
 ---
 
 ## 🎬 Demo
 
-<div align="center">
-
 | 🎙️ Voice Input | 🧠 Intent Detection | ⚡ Tool Execution | ✅ Result |
 |:---:|:---:|:---:|:---:|
 | Mic or `.wav`/`.mp3` | Whisper → LLaMA 3.1 | Router dispatches tool | Output in `output/` |
-
-</div>
 
 **Example flows that work out of the box:**
 
@@ -53,8 +50,6 @@
 
 ## 📸 Screenshots & UI Walkthrough
 
-<div align="center">
-
 ### Gradio Web Interface
 
 The **Voice Agent** provides an intuitive, modern Gradio interface with:
@@ -67,7 +62,7 @@ The **Voice Agent** provides an intuitive, modern Gradio interface with:
 
 <br/>
 
-<img src="https://github.com/anishsmit23/Voice_agent/issues/1#issue-4261383807" alt="Gradio UI showing voice input and output" width="100%"/>
+<img src="docs/screenshots/gradio-ui.png" alt="Gradio UI showing voice input and output" width="100%"/>
 
 <br/>
 
@@ -110,7 +105,6 @@ Intent: chat
 Result: ✅ Full conversational response with session context
 ```
 
-</div>
 
 ---
 
@@ -588,5 +582,3 @@ Made by [anish](https://github.com/anishsmit23)
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" width="100%"/>
 
 </div>
-#   V o i c e _ a g e n t  
- 
