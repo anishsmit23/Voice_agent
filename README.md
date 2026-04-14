@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Voice%20Agent&fontSize=70&fontColor=fff&animation=twinkling&fontAlignY=35&desc=Voice-Controlled%20Local%20AI%20Agent&descAlignY=60&descSize=22" width="100%"/>
 
@@ -62,7 +62,7 @@ The **Voice Agent** provides an intuitive, modern Gradio interface with:
 
 <br/>
 
-<img src="docs/screenshots/gradio-ui.png" alt="Gradio UI showing voice input and output" width="100%"/>
+Screenshot link: [View Gradio UI screenshots](https://github.com/anishsmit23/Voice_agent/issues/1#issue-4261383807)
 
 <br/>
 
@@ -582,5 +582,3 @@ Made by [anish](https://github.com/anishsmit23)
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" width="100%"/>
 
 </div>
-#   V o i c e _ a g e n t  
- 
